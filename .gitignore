@@ -1,3 +1,12 @@
 _*
 .DS_Store
-
+CMakeFiles/
+CMakeCache/
+cmake_install.cmake
+Makefile
+.idea/
+project.xcworkspace/
+xcuserdata/
+CMakeCache.txt
+CPackConfig.cmake
+CPackSourceConfig.cmake

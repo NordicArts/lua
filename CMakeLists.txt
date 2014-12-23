@@ -4,20 +4,25 @@
 # For details see the COPYRIGHT file distributed with LuaDist.
 # Please note that the package source code is licensed under its own license.
 
-project ( lua C )
-cmake_minimum_required ( VERSION 2.8 )
-include ( cmake/dist.cmake )
+# CMake Version
+cmake_minimum_required(VERSION 2.8)
 
-## CONFIGURATION
-# Default configuration (we assume POSIX by default)
-set ( LUA_PATH "LUA_PATH" CACHE STRING "Environment variable to use as package.path." )
-set ( LUA_CPATH "LUA_CPATH" CACHE STRING "Environment variable to use as package.cpath." )
-set ( LUA_INIT "LUA_INIT" CACHE STRING "Environment variable for initial script." )
+# Project Name
+project(lua)
 
-option ( LUA_ANSI "Use only ansi features." OFF )
-option ( LUA_USE_RELATIVE_LOADLIB "Use modified loadlib.c with support for relative paths on posix systems." ON )
-option ( LUA_COMPAT_ALL "Enable backwards compatibility options." ON )
-set ( LUA_IDSIZE 60 CACHE NUMBER "gives the maximum size for the description of the source." )
+# Add Dist Make
+include(${PROJECT_SOURCE_DIR}/cmake/dist.cmake)
+
+# Config
+set(LUA_PATH "LUA_PATH" CACHE STRING "Enviroment variable, package.path")
+set(LUA_CPATH "LUA_CPATH" CACHE STRING "Enviroment variable, package.cpath")
+set(LUA_INIT "LUA_INIT" CACHE STRING "Enviroment variable, init")
+set(LUA_IDSIZE 60 CACHE NUMBER "Max size of description")
+
+# Options
+option(LUA_ANSI "Only ANSI" OFF)
+option(LUA_USE_RELATIVE_LOADLIB "Use local loadlib.c" ON)
+option(LUA_COMPAT_ALL "Backwards compatible" ON)
 
 #2DO: LUAI_* and LUAL_* settings, for now defaults are used.
 set ( LUA_DIRSEP "/" )
@@ -106,10 +111,22 @@ endif ( )
 
 ## SOURCES
 # Generate luaconf.h
-configure_file ( src/luaconf.h.in ${CMAKE_CURRENT_BINARY_DIR}/luaconf.h )
+configure_file ( src/luaconf.h.in ${PROJECT_SOURCE_DIR}/include/luaconf.h )
+
+# Var
+set(PSD ${PROJECT_SOURCE_DIR})
+
+# Headers
+include_directories(${PROJECT_SOURCE_DIR}/include)
+link_directories(${PROJECT_SOURCE_DIR}/include)
+
+# C Files
+include_directories(${PROJECT_SOURCE_DIR}/src)
+link_directories(${PROJECT_SOURCE_DIR}/src)
 
 # Sources and headers
 include_directories ( src ${CMAKE_CURRENT_BINARY_DIR} )
+link_directories(${CMAKE_CURRENT_BINARY_DIR})
 set ( SRC_CORE src/lapi.c src/lcode.c src/lctype.c src/ldebug.c src/ldo.c src/ldump.c 
   src/lfunc.c src/lgc.c src/llex.c src/lmem.c src/lobject.c src/lopcodes.c src/lparser.c 
   src/lstate.c src/lstring.c src/ltable.c src/ltm.c src/lundump.c src/lvm.c src/lzio.c )
@@ -134,24 +151,3 @@ if ( LUA_BUILD_AS_DLL )
   set_target_properties ( liblua PROPERTIES COMPILE_DEFINITIONS LUA_BUILD_AS_DLL )
 endif ()
 
-add_executable ( lua ${SRC_LUA} src/lua.rc )
-target_link_libraries ( lua liblua )
-
-add_executable ( luac ${SRC_CORE} ${SRC_LIB} ${SRC_LUAC} src/luac.rc )
-target_link_libraries ( luac ${LIBS} )
-
-# On windows a variant of the lua interpreter without console output needs to be built
-if ( LUA_BUILD_WLUA )
-  add_executable ( wlua WIN32 src/wmain.c ${SRC_LUA} src/lua.rc )
-  target_link_libraries ( wlua liblua )
-  install_executable ( wlua )
-endif ( )
-
-install_executable ( lua luac )
-install_library ( liblua )
-install_data ( README.md )
-#install_lua_module ( strict etc/strict.lua )
-install_header ( src/lua.h src/lualib.h src/lauxlib.h src/lua.hpp ${CMAKE_CURRENT_BINARY_DIR}/luaconf.h )
-install_doc ( doc/ )
-install_foo ( etc/ )
-#install_test ( test/ )
