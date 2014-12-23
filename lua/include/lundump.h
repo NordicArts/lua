@@ -7,8 +7,8 @@
 #ifndef lundump_h
 #define lundump_h
 
-#include <lua/include/lobject.h>
-#include <lua/include/lzio.h>
+#include "lobject.h"
+#include "lzio.h"
 
 /* load one chunk; from lundump.c */
 LUAI_FUNC Closure* luaU_undump (lua_State* L, ZIO* Z, Mbuffer* buff, const char* name);

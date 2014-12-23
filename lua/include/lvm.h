@@ -8,9 +8,9 @@
 #define lvm_h
 
 
-#include <lua/include/ldo.h>
-#include <lua/include/lobject.h>
-#include <lua/include/ltm.h>
+#include "ldo.h"
+#include "lobject.h"
+#include "ltm.h"
 
 
 #define tostring(L,o) (ttisstring(o) || (luaV_tostring(L, o)))
