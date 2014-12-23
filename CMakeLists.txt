@@ -109,37 +109,69 @@ if ( LUA_USE_CURSES )
   list ( APPEND LIBS ${CURSES_LIBRARY} )
 endif ( )
 
-## SOURCES
-# Generate luaconf.h
-configure_file ( src/luaconf.h.in ${PROJECT_SOURCE_DIR}/include/luaconf.h )
-
 # Var
 set(PSD ${PROJECT_SOURCE_DIR})
+set(PSDS ${PROJECT_SOURCE_DIR}/lua/src)
+set(PSDI ${PROJECT_SOURCE_DIR}/lua/include)
+
+link_directories(${PSD})
+include_directories(${PSD})
+
+## SOURCES
+# Generate luaconf.h
+configure_file ( ${PSDI}/luaconf.h.in ${PSDI}/luaconf.h )
 
 # Headers
-include_directories(${PROJECT_SOURCE_DIR}/include)
-link_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PSDI})
+link_directories(${PSDI})
 
 # C Files
-include_directories(${PROJECT_SOURCE_DIR}/src)
-link_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PSDS})
+link_directories(${PSDS})
 
-# Sources and headers
-include_directories ( src ${CMAKE_CURRENT_BINARY_DIR} )
-link_directories(${CMAKE_CURRENT_BINARY_DIR})
-set ( SRC_CORE src/lapi.c src/lcode.c src/lctype.c src/ldebug.c src/ldo.c src/ldump.c 
-  src/lfunc.c src/lgc.c src/llex.c src/lmem.c src/lobject.c src/lopcodes.c src/lparser.c 
-  src/lstate.c src/lstring.c src/ltable.c src/ltm.c src/lundump.c src/lvm.c src/lzio.c )
-set ( SRC_LIB src/lauxlib.c src/lbaselib.c src/lbitlib.c src/lcorolib.c src/ldblib.c 
-  src/liolib.c src/lmathlib.c src/loslib.c src/lstrlib.c src/ltablib.c src/linit.c )
-set ( SRC_LUA src/lua.c )
-set ( SRC_LUAC src/luac.c )
+# Sources
+set(SRC_CORE ${PSDS}/lapi.c)
+list(APPEND SRC_CORE ${PSDS}/lcode.c)
+list(APPEND SRC_CORE ${PSDS}/lctype.c)
+list(APPEND SRC_CORE ${PSDS}/ldebug.c)
+list(APPEND SRC_CORE ${PSDS}/ldo.c)
+list(APPEND SRC_CORE ${PSDS}/ldump.c)
+list(APPEND SRC_CORE ${PSDS}/lfunc.c)
+list(APPEND SRC_CORE ${PSDS}/lgc.c)
+list(APPEND SRC_CORE ${PSDS}/llex.c)
+list(APPEND SRC_CORE ${PSDS}/lmem.c)
+list(APPEND SRC_CORE ${PSDS}/lobject.c)
+list(APPEND SRC_CORE ${PSDS}/lopcodes.c)
+list(APPEND SRC_CORE ${PSDS}/lparser.c)
+list(APPEND SRC_CORE ${PSDS}/lstate.c)
+list(APPEND SRC_CORE ${PSDS}/lstring.c)
+list(APPEND SRC_CORE ${PSDS}/ltable.c)
+list(APPEND SRC_CORE ${PSDS}/ltm.c)
+list(APPEND SRC_CORE ${PSDS}/lundump.c)
+list(APPEND SRC_CORE ${PSDS}/lvm.c)
+list(APPEND SRC_CORE ${PSDS}/lzio.c)
+
+set(SRC_LIB ${PSDS}/lauxlib.c)
+list(APPEND SRC_LIB ${PSDS}/lbaselib.c)
+list(APPEND SRC_LIB ${PSDS}/lbitlib.c)
+list(APPEND SRC_LIB ${PSDS}/lcorolib.c)
+list(APPEND SRC_LIB ${PSDS}/ldblib.c)
+list(APPEND SRC_LIB ${PSDS}/liolib.c)
+list(APPEND SRC_LIB ${PSDS}/lmathlib.c)
+list(APPEND SRC_LIB ${PSDS}/loslib.c)
+list(APPEND SRC_LIB ${PSDS}/lstrlib.c)
+list(APPEND SRC_LIB ${PSDS}/ltablib.c)
+list(APPEND SRC_LIB ${PSDS}/linit.c)
+
+set ( SRC_LUA ${PSDS}/lua.c )
+
+set ( SRC_LUAC ${PSDS}/luac.c )
 
 if ( LUA_USE_RELATIVE_LOADLIB )
   # Use modified loadlib
-  list ( APPEND SRC_LIB src/loadlib_rel.c )
+  list ( APPEND SRC_LIB ${PSDS}/loadlib_rel.c )
 else ( )
-  list ( APPEND SRC_LIB src/loadlib.c )
+  list ( APPEND SRC_LIB ${PSDS}/loadlib.c )
 endif ( )
 
 ## BUILD
@@ -150,4 +182,6 @@ set_target_properties ( liblua PROPERTIES OUTPUT_NAME lua CLEAN_DIRECT_OUTPUT 1 
 if ( LUA_BUILD_AS_DLL )
   set_target_properties ( liblua PROPERTIES COMPILE_DEFINITIONS LUA_BUILD_AS_DLL )
 endif ()
+
+SET(LUA_INCLUDES ${PROJECT_SOURCE_DIR}/lua/include)
 
