@@ -10,3 +10,5 @@ xcuserdata/
 CMakeCache.txt
 CPackConfig.cmake
 CPackSourceConfig.cmake
+liblua.*
+lua/include/luaconf.h
